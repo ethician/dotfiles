@@ -87,6 +87,7 @@ set comments=sl:/*,mb:\ *,elx:\ */
 set laststatus=2
 set wildmode=longest,list
 set wildmenu
+set pastetoggle=<F2>
 
 "////////////////////////////
 "// Plugin Specific Settings
@@ -125,8 +126,8 @@ nmap <C-x> :q<CR>
 imap <C-x> <ESC>:q<CR>i
 
 " clang-format
-map <leader>ff :pyf /opt/local/libexec/llvm-5.0/libexec/clang-format/clang-format.py<CR>
-imap <leader>ff <ESC>:pyf /opt/local/libexec/llvm-5.0/libexec/clang-format/clang-format.py<CR>i
+map <leader>ff :pyf ~/.dotfiles/clang-format/clang-format.py<CR>
+imap <leader>ff <ESC>:pyf ~/.dotfiles/clang-format/clang-format.py<CR>i
 
 " NERDTree
 map <C-o> :NERDTreeToggle<CR>
