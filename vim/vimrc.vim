@@ -21,7 +21,7 @@ Plugin 'vim-airline/vim-airline.git'
 Plugin 'vim-airline/vim-airline-themes'
 "Plugin 'kien/ctrlp.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'mkitt/tabline.vim'
+Plugin 'ethician/tabline.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
