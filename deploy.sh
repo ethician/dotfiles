@@ -61,7 +61,7 @@ deploy_clang_format() {
     # no clang-format*.py found in those locations
     rm -f clang-format/finds
     echo " € no clang-format*.py find"
-    echo -n "Enter clang-format*.py location: "
+    printf "Enter clang-format*.py location: "
     read finds
     [ -z "${finds}" ] && return
   else
@@ -73,7 +73,7 @@ deploy_clang_format() {
       printf " %2d. ${line}\n" ${count}
       count=$(( $count + 1 ))
     done < "clang-format/finds"
-    echo -n "Make a selection: "
+    printf "Make a selection: "
     read index
     if [ ${index} -ge ${count} ]; then
       echo " € nice try smarta\$\$"
@@ -97,6 +97,49 @@ deploy_clang_format() {
   echo " • created file ${HOME}/.clang-format"
 }
 
+do_clone_vundle() {
+  local cwd=$(pwd)
+  cd vim/vim/bundle
+  rm -rf Vundle.vim
+  git clone https://github.com/VundleVim/Vundle.vim.git
+  cd ${cwd}
+}
+
+try_clone_vundle() {
+  read -p "Do you wish to clone Vundle.vim (y/N)? " choice
+	case "${choice}" in
+		y|Y )
+      do_clone_vundle
+      ;;
+		* )
+      ;;
+	esac
+}
+
+do_clone_ohmyzsh() {
+  local cwd=$(pwd)
+  cd zsh
+  rm -rf oh-my-zsh
+  git clone git@github.com:ethician/oh-my-zsh.git
+  cd ${cwd}
+}
+
+try_clone_ohmyzsh() {
+  read -p "Do you wish to clone oh-my-zsh (y/N)? " choice
+	case "${choice}" in
+		y|Y )
+      do_clone_ohmyzsh
+      ;;
+		* )
+      ;;
+	esac
+}
+
+deploy_git_repos() {
+  try_clone_vundle
+  try_clone_ohmyzsh
+}
+
 deploy() {
   printf "source-file ${HOME}/.dotfiles/tmux/tmux.conf\n" > ${HOME}/.tmux.conf
   echo " • created file ${HOME}/.tmux.conf"
@@ -114,6 +157,7 @@ deploy() {
   echo " • created symlink ${HOME}/.vim"
   cd ${cwd}
   deploy_clang_format
+  deploy_git_repos
 }
 
 check_home

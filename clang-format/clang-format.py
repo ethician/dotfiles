@@ -1,1 +1,1 @@
-/usr/share/clang/clang-format-3.9/clang-format.py
+/opt/local/libexec/llvm-5.0/share/clang/clang-format.py
