@@ -120,7 +120,7 @@ do_clone_ohmyzsh() {
   local cwd=$(pwd)
   cd zsh
   rm -rf oh-my-zsh
-  git clone git@github.com:ethician/oh-my-zsh.git
+  git clone https://github.com/ethician/oh-my-zsh.git
   cd ${cwd}
 }
 
