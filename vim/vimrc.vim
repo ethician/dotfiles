@@ -102,21 +102,31 @@ let g:airline_theme='wombat'
 "///////////////
 "// Status Line
 
-set statusline=
-set statusline +=%1*\ %n\ %*            "buffer number
-set statusline +=%5*%{&ff}%*            "file format
-set statusline +=%3*%y%*                "file type
-set statusline +=%4*\ %<%f%*            "full path
-set statusline +=%2*%m%*                "modified flag
-set statusline +=%1*%=%5l%*             "current line
-set statusline +=%2*/%l%*               "total lines
-set statusline +=%1*%4v\ %*             "virtual column number
-set statusline +=%2*0x%04b\ %*          "character under cursor
-hi user1 ctermfg=166
-hi user2 ctermfg=1
-hi user3 ctermfg=163
-hi user4 ctermfg=34
-hi user5 ctermfg=184
+"set statusline=
+"set statusline +=%1*\ %n\ %*            "buffer number
+"set statusline +=%5*%{&ff}%*            "file format
+"set statusline +=%3*%y%*                "file type
+"set statusline +=%4*\ %<%f%*            "full path
+"set statusline +=%2*%m%*                "modified flag
+"set statusline +=%1*%=%5l%*             "current line
+"set statusline +=%2*/%l%*               "total lines
+"set statusline +=%1*%4v\ %*             "virtual column number
+"set statusline +=%2*0x%04b\ %*          "character under cursor
+"hi user1 ctermfg=166
+"hi user2 ctermfg=1
+"hi user3 ctermfg=163
+"hi user4 ctermfg=34
+"hi user5 ctermfg=184
+
+"/////////////////////////////////
+"// tmux control keys propagation
+if &term =~ '^screen'
+  " tmux will send xterm-style keys when its xterm-keys option is on
+  execute "set <xUp>=\e[1;*A"
+  execute "set <xDown>=\e[1;*B"
+  execute "set <xRight>=\e[1;*C"
+  execute "set <xLeft>=\e[1;*D"
+endif
 
 "////////////
 "// Mappings

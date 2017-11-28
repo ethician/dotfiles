@@ -36,6 +36,8 @@ try_create_backup() {
 }
 
 create_backups() {
+  try_create_backup "${HOME}/.bashrc"
+  try_create_backup "${HOME}/.bash_profile"
   try_create_backup "${HOME}/.dircolors"
   try_create_backup "${HOME}/.tmux"
   try_create_backup "${HOME}/.tmux.conf"
@@ -108,10 +110,8 @@ do_clone_vundle() {
 try_clone_vundle() {
   read -p "Do you wish to clone Vundle.vim (y/N)? " choice
 	case "${choice}" in
-		y|Y )
+		y|Y)
       do_clone_vundle
-      ;;
-		* )
       ;;
 	esac
 }
@@ -141,6 +141,10 @@ deploy_git_repos() {
 }
 
 deploy() {
+  printf "source ${HOME}/.dotfiles/bash/bashrc.sh\n" > ${HOME}/.bashrc
+  echo " • created file ${HOME}/.bashrc"
+  printf "source ${HOME}/.dotfiles/bash/bashrc.sh\n" > ${HOME}/.bash_profile
+  echo " • created file ${HOME}/.bash_profile"
   printf "source-file ${HOME}/.dotfiles/tmux/tmux.conf\n" > ${HOME}/.tmux.conf
   echo " • created file ${HOME}/.tmux.conf"
   printf "so ${HOME}/.dotfiles/vim/vimrc.vim\n" > ${HOME}/.vimrc
@@ -160,6 +164,37 @@ deploy() {
   deploy_git_repos
 }
 
+cleanup() {
+  rm -f ${HOME}/.bashrc
+  echo " • deleted file ${HOME}/.bashrc"
+  rm -f ${HOME}/.bash_profile
+  echo " • deleted file ${HOME}/.bash_profile"
+  rm -f ${HOME}/.clang-format
+  echo " • deleted file ${HOME}/.clang-format"
+  rm -f ${HOME}/.dircolors
+  echo " • deleted file ${HOME}/.dircolors"
+  rm -f ${HOME}/.tmux.conf
+  echo " • deleted file ${HOME}/.tmux.conf"
+  rm -f ${HOME}/.vimrc
+  echo " • deleted file ${HOME}/.vimrc"
+  rm -f ${HOME}/.zshrc
+  echo " • deleted file ${HOME}/.zshrc"
+}
+
+handle_overrides() {
+  if [ $# -gt 0 ]; then
+    echo "$1"
+    if [ "$1" = "clang_format" -o "$1" = "cf" ]; then
+      deploy_clang_format
+      exit 0
+    elif [ "$1" = "cleanup" ]; then
+      cleanup
+      exit 0
+    fi
+  fi
+}
+
+handle_overrides $*
 check_home
 create_backups
 deploy

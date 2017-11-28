@@ -1,1 +1,0 @@
-/opt/local/libexec/llvm-5.0/share/clang/clang-format.py
