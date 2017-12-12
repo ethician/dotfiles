@@ -112,136 +112,136 @@ TERM xterm-debian
 #NORMAL 00 # no color code at all
 #FILE 00 # regular file: use no color at all
 RESET 0 # reset to "normal" color
-DIR 01;94 # directory
-LINK 01;35 # symbolic link. (If you set this to 'target' instead of a
-           # numerical value, the color is as for the file pointed to.)
+DIR 01;38;5;33 # directory
+LINK 01;38;5;207 # symbolic link. (If you set this to 'target' instead of a
+                 # numerical value, the color is as for the file pointed to.)
 MULTIHARDLINK 00 # regular file with more than one link
-FIFO 01;97 # pipe
-SOCK 01;97 # socket
-DOOR 01;97 # door
-BLK 01;33 # block device driver
-CHR 01;33 # character device driver
-ORPHAN 40;31;01 # symlink to nonexistent file, or non-stat'able file
-SETUID 37;41 # file that is setuid (u+s)
-SETGID 30;43 # file that is setgid (g+s)
-CAPABILITY 30;41 # file with capability
-STICKY_OTHER_WRITABLE 30;42 # dir that is sticky and other-writable (+t,o+w)
-OTHER_WRITABLE 34;42 # dir that is other-writable (o+w) and not sticky
-STICKY 37;44 # dir with the sticky bit set (+t) and not other-writable
+FIFO 01;38;5;214 # pipe
+SOCK 01;38;5;202 # socket
+DOOR 01;38;5;226 # door
+BLK 01;38;5;24 # block device driver
+CHR 01;38;5;60 # character device driver
+ORPHAN 01;48;5;52;38;5;207 # symlink to nonexistent file, or non-stat'able file
+SETUID 48;5;1;38;5;7 # file that is setuid (u+s)
+SETGID 48;5;166;38;5;7 # file that is setgid (g+s)
+CAPABILITY 48;5;1;38;5;16 # file with capability
+STICKY_OTHER_WRITABLE 48;5;22;38;5;42 # dir that is sticky and other-writable (+t,o+w)
+OTHER_WRITABLE 48;5;22;38;5;75 # dir that is other-writable (o+w) and not sticky
+STICKY 48;5;21;38;5;7 # dir with the sticky bit set (+t) and not other-writable
 # This is for files with execute permission:
-EXEC 01;92
+EXEC 01;38;5;40
 # List any file extensions like '.gz' or '.tar' that you would like ls
 # to colorize below. Put the extension, a space, and the color init string.
 # (and any comments you want to add after a '#')
 # If you use DOS-style suffixes, you may want to uncomment the following:
-.cmd 01;92
-.exe 01;92
-.com 01;92
-.btm 01;92
-.bat 01;92
+.cmd 01;38;5;34
+.exe 01;38;5;34
+.com 01;38;5;34
+.btm 01;38;5;34
+.bat 01;38;5;34
 # Or if you want to colorize scripts even if they do not have the
 # executable bit actually set.
-.sh 04;37
-.csh 04;37
-.zsh 04;37
+.sh 01;38;5;28
+.csh 01;38;5;28
+.zsh 01;38;5;28
  # archives or compressed (bright red)
-.tar 01;31
-.tgz 01;31
-.arj 01;31
-.taz 01;31
-.lzh 01;31
-.lzma 01;31
-.tlz 01;31
-.txz 01;31
-.zip 01;31
-.z 01;31
-.Z 01;31
-.dz 01;31
-.gz 01;31
-.lz 01;31
-.xz 01;31
-.bz2 01;31
-.bz 01;31
-.tbz 01;31
-.tbz2 01;31
-.tz 01;31
-.deb 01;31
-.rpm 01;31
-.jar 01;31
-.war 01;31
-.ear 01;31
-.sar 01;31
-.rar 01;31
-.ace 01;31
-.zoo 01;31
-.cpio 01;31
-.7z 01;31
-.rz 01;31
+.tar 01;38;5;95
+.tgz 01;38;5;95
+.arj 01;38;5;95
+.taz 01;38;5;95
+.lzh 01;38;5;95
+.lzma 01;38;5;95
+.tlz 01;38;5;95
+.txz 01;38;5;95
+.zip 01;38;5;95
+.z 01;38;5;95
+.Z 01;38;5;95
+.dz 01;38;5;95
+.gz 01;38;5;95
+.lz 01;38;5;95
+.xz 01;38;5;95
+.bz2 01;38;5;95
+.bz 01;38;5;95
+.tbz 01;38;5;95
+.tbz2 01;38;5;95
+.tz 01;38;5;95
+.deb 01;38;5;95
+.rpm 01;38;5;95
+.jar 01;38;5;95
+.war 01;38;5;95
+.ear 01;38;5;95
+.sar 01;38;5;95
+.rar 01;38;5;95
+.ace 01;38;5;95
+.zoo 01;38;5;95
+.cpio 01;38;5;95
+.7z 01;38;5;95
+.rz 01;38;5;95
 # image formats
-.jpg 01;35
-.jpeg 01;35
-.gif 01;35
-.bmp 01;35
-.pbm 01;35
-.pgm 01;35
-.ppm 01;35
-.tga 01;35
-.xbm 01;35
-.xpm 01;35
-.tif 01;35
-.tiff 01;35
-.png 01;35
-.svg 01;35
-.svgz 01;35
-.mng 01;35
-.pcx 01;35
-.mov 01;35
-.mpg 01;35
-.mpeg 01;35
-.m2v 01;35
-.mkv 01;35
-.webm 01;35
-.ogm 01;35
-.mp4 01;35
-.m4v 01;35
-.mp4v 01;35
-.vob 01;35
-.qt 01;35
-.nuv 01;35
-.wmv 01;35
-.asf 01;35
-.rm 01;35
-.rmvb 01;35
-.flc 01;35
-.avi 01;35
-.fli 01;35
-.flv 01;35
-.gl 01;35
-.dl 01;35
-.xcf 01;35
-.xwd 01;35
-.yuv 01;35
-.cgm 01;35
-.emf 01;35
+.jpg 01;38;5;131
+.jpeg 01;38;5;131
+.gif 01;38;5;131
+.bmp 01;38;5;131
+.pbm 01;38;5;131
+.pgm 01;38;5;131
+.ppm 01;38;5;131
+.tga 01;38;5;131
+.xbm 01;38;5;131
+.xpm 01;38;5;131
+.tif 01;38;5;131
+.tiff 01;38;5;131
+.png 01;38;5;131
+.svg 01;38;5;131
+.svgz 01;38;5;131
+.mng 01;38;5;131
+.pcx 01;38;5;131
+.mov 01;38;5;131
+.mpg 01;38;5;131
+.mpeg 01;38;5;131
+.m2v 01;38;5;131
+.mkv 01;38;5;131
+.webm 01;38;5;131
+.ogm 01;38;5;131
+.mp4 01;38;5;131
+.m4v 01;38;5;131
+.mp4v 01;38;5;131
+.vob 01;38;5;131
+.qt 01;38;5;131
+.nuv 01;38;5;131
+.wmv 01;38;5;131
+.asf 01;38;5;131
+.rm 01;38;5;131
+.rmvb 01;38;5;131
+.flc 01;38;5;131
+.avi 01;38;5;131
+.fli 01;38;5;131
+.flv 01;38;5;131
+.gl 01;38;5;131
+.dl 01;38;5;131
+.xcf 01;38;5;131
+.xwd 01;38;5;131
+.yuv 01;38;5;131
+.cgm 01;38;5;131
+.emf 01;38;5;131
 # http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions
-.axv 01;35
-.anx 01;35
-.ogv 01;35
-.ogx 01;35
+.axv 01;38;5;131
+.anx 01;38;5;131
+.ogv 01;38;5;131
+.ogx 01;38;5;131
 # audio formats
-.aac 00;36
-.au 00;36
-.flac 00;36
-.mid 00;36
-.midi 00;36
-.mka 00;36
-.mp3 00;36
-.mpc 00;36
-.ogg 00;36
-.ra 00;36
-.wav 00;36
+.aac 01;38;5;137
+.au 01;38;5;137
+.flac 01;38;5;137
+.mid 01;38;5;137
+.midi 01;38;5;137
+.mka 01;38;5;137
+.mp3 01;38;5;137
+.mpc 01;38;5;137
+.ogg 01;38;5;137
+.ra 01;38;5;137
+.wav 01;38;5;137
 # http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions
-.axa 00;36
-.oga 00;36
-.spx 00;36
-.xspf 00;36
+.axa 01;38;5;137
+.oga 01;38;5;137
+.spx 01;38;5;137
+.xspf 01;38;5;137

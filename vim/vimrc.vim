@@ -142,3 +142,8 @@ imap <leader>ff <ESC>:pyf ~/.dotfiles/clang-format/clang-format.py<CR>i
 
 " NERDTree
 map <C-o> :NERDTreeToggle<CR>
+
+"///////////////////////////////////
+"// Transparent background override
+hi Normal ctermbg=none
+hi NonText ctermbg=none

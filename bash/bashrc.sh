@@ -47,14 +47,14 @@ esac
 #// prompt
 
 if [ "${color_prompt}" = yes ]; then
-  red='\033[1;31m'
-  green='\033[1;32m'
-  light_blue='\033[1;94m'
+  root='\033[1;38;5;160m'
+  user='\033[1;38;5;40m'
+  dir='\033[1;38;5;33m'
   nc='\033[0m'
   if [ ${EUID} -ne 0 ]; then
-    PS1="\[${green}\]\u@\h\[${nc}\] \[${light_blue}\]\w\[${nc}\] \$ "
+    PS1="\[${user}\]\u@\h\[${nc}\] \[${dir}\]\w\[${nc}\] \$ "
   else
-    PS1="\[${red}\]\u@\h\[${nc}\] \[${light_blue}\]\w\[${nc}\] # "
+    PS1="\[${root}\]\u@\h\[${nc}\] \[${dir}\]\w\[${nc}\] # "
   fi
 else
   PS1='\u@\h \w \$ '
