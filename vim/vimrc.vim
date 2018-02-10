@@ -131,10 +131,22 @@ endif
 "////////////
 "// Mappings
 
-nmap <C-s> :w<CR>
-imap <C-s> <ESC>:w<CR>i
-nmap <C-x> :q<CR>
-imap <C-x> <ESC>:q<CR>i
+"nmap <C-s> :w<CR>
+"imap <C-s> <ESC>:w<CR>i
+"nmap <C-x> :q<CR>
+"imap <C-x> <ESC>:q<CR>i
+
+" tabs
+nnoremap <A-Left> :tabprevious<CR>
+nnoremap <A-Right> :tabnext<CR>
+inoremap <A-Left> <ESC>:tabprevious<CR>
+inoremap <A-Right> <ESC>:tabnext<CR>
+
+" screen movement
+nnoremap <A-Up> <C-y>
+nnoremap <A-Down> <C-e>
+inoremap <A-Up> <ESC><C-y>i
+inoremap <A-Down> <ESC><C-e>i
 
 " clang-format
 map <leader>ff :pyf ~/.dotfiles/clang-format/clang-format.py<CR>

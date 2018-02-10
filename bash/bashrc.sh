@@ -22,7 +22,7 @@ shopt -s histappend
 
 [ "${COLORTERM}" == "gnome-terminal" ] && export TERM=xterm-256color
 case "${TERM}" in
-  xterm-*color|screen-*color|tmux-*color)
+  xterm-*color|screen-*color|tmux-*color|linux)
     color_prompt=yes
     ;;
 esac
