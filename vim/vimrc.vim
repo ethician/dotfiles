@@ -23,6 +23,7 @@ Plugin 'vim-airline/vim-airline-themes'
 "Plugin 'kien/ctrlp.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ethician/tabline.vim'
+Plugin 'fatih/vim-go'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -157,5 +158,10 @@ map <C-o> :NERDTreeToggle<CR>
 
 "///////////////////////////////////
 "// Transparent background override
-hi Normal ctermbg=none
-hi NonText ctermbg=none
+function! SetTransparent()
+  hi! Normal guibg=NONE ctermbg=NONE
+  hi! NonText guibg=NONE ctermbg=NONE
+endfunction
+map <A-t> :call SetTransparent()<CR>
+hi! Normal ctermbg=NONE guibg=NONE
+hi! NonText ctermbg=NONE guibg=NONE
