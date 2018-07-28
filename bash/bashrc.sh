@@ -89,7 +89,7 @@ fi
 #//////////////////
 #// custom configs
 
-for custom_config in "${HOME}/.dotfiles/bash/custom_configs/*"
+for custom_config in $(find ${HOME}/.dotfiles/bash/custom_configs/* 2> /dev/null)
 do
   source ${custom_config}
 done
