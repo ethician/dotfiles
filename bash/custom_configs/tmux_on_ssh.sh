@@ -6,7 +6,7 @@ if [ -n "${tmux}" -a -z "${TMUX}" -a -n "${SSH_CONNECTION}" ]; then
   socket="${socketdir}/default"
   if [ ! -d "${socketdir}" ]; then
     mkdir -p ${socketdir}
-    chown 0777 ${socketdir}
+    chmod 0777 ${socketdir}
   fi
 
   echo ""
