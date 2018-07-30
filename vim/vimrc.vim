@@ -24,6 +24,7 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ethician/tabline.vim'
 Plugin 'fatih/vim-go'
+Plugin 'Valloric/YouCompleteMe'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -152,6 +153,11 @@ inoremap <A-Down> <ESC><C-e>i
 " clang-format
 map <leader>ff :pyf ~/.dotfiles/clang-format/clang-format.py<CR>
 imap <leader>ff <ESC>:pyf ~/.dotfiles/clang-format/clang-format.py<CR>i
+
+" YouCompleteMe
+let g:ycm_global_ycm_extra_conf = '~/.dotfiles/vim/ycm/ycm_extra_conf.py'
+let g:ycm_add_preview_to_completeopt = 0
+set completeopt-=preview
 
 " NERDTree
 map <C-o> :NERDTreeToggle<CR>
