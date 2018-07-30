@@ -1,3 +1,5 @@
+##shellscript
+
 #//////////////////////////
 #// interactive shell only
 
@@ -89,7 +91,7 @@ fi
 #//////////////////
 #// custom configs
 
-for custom_config in $(find ${HOME}/.dotfiles/bash/custom_configs/* 2> /dev/null)
+for config in $(find ${HOME}/.dotfiles/bash/configs/* 2> /dev/null)
 do
-  source ${custom_config}
+  source ${config}
 done

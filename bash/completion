@@ -1,0 +1,7 @@
+##shellscript
+
+for completion in $(find ${HOME}/.dotfiles/bash/completions/* 2> /dev/null)
+do
+  source ${completion}
+done
+

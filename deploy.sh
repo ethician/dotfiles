@@ -141,9 +141,9 @@ deploy_git_repos() {
 }
 
 deploy() {
-  printf "source ${HOME}/.dotfiles/bash/bashrc.sh\n" > ${HOME}/.bashrc
+  printf "source ${HOME}/.dotfiles/bash/bashrc\n" > ${HOME}/.bashrc
   echo " • created file ${HOME}/.bashrc"
-  printf "source ${HOME}/.dotfiles/bash/bashrc.sh\n" > ${HOME}/.bash_profile
+  printf "source ${HOME}/.dotfiles/bash/bashrc\n" > ${HOME}/.bash_profile
   echo " • created file ${HOME}/.bash_profile"
   printf "source-file ${HOME}/.dotfiles/tmux/tmux.conf\n" > ${HOME}/.tmux.conf
   echo " • created file ${HOME}/.tmux.conf"

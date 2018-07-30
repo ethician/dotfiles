@@ -1,3 +1,5 @@
+##shellscript
+
 tmux=$(which tmux)
 if [ -n "${tmux}" -a -z "${TMUX}" -a -n "${SSH_CONNECTION}" ]; then
   unset tmux
@@ -18,10 +20,10 @@ if [ -n "${tmux}" -a -z "${TMUX}" -a -n "${SSH_CONNECTION}" ]; then
     tmux -S ${socket} ls
   fi
 
-  echo -n "TMUX | Select which session to connect to or create new (or type none): "
+  echo -n "TMUX | Select which session to connect to or create new (or press enter): "
   read session
 
-  if [ "${session}" != "none" ]; then
+  if [ -n "${session}" ]; then
     tmux -S ${socket} attach -t ${session}
     if [ $? -gt 0 ]; then
       tmux -S ${socket} new-session -d -s ${session}
