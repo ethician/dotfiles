@@ -37,6 +37,7 @@ try_create_backup() {
 
 create_backups() {
   try_create_backup "${HOME}/.bashrc"
+  try_create_backup "${HOME}/.bash_completion"
   try_create_backup "${HOME}/.bash_profile"
   try_create_backup "${HOME}/.dircolors"
   try_create_backup "${HOME}/.tmux"
@@ -143,6 +144,8 @@ deploy_git_repos() {
 deploy() {
   printf "source ${HOME}/.dotfiles/bash/bashrc\n" > ${HOME}/.bashrc
   echo " • created file ${HOME}/.bashrc"
+  printf "source ${HOME}/.dotfiles/bash/completion\n" > ${HOME}/.bash_completion
+  echo " • created file ${HOME}/.bash_completion"
   printf "source ${HOME}/.dotfiles/bash/bashrc\n" > ${HOME}/.bash_profile
   echo " • created file ${HOME}/.bash_profile"
   printf "source-file ${HOME}/.dotfiles/tmux/tmux.conf\n" > ${HOME}/.tmux.conf
@@ -167,6 +170,8 @@ deploy() {
 cleanup() {
   rm -f ${HOME}/.bashrc
   echo " • deleted file ${HOME}/.bashrc"
+  rm -f ${HOME}/.bash_completion
+  echo " • deleted file ${HOME}/.bash_completion"
   rm -f ${HOME}/.bash_profile
   echo " • deleted file ${HOME}/.bash_profile"
   rm -f ${HOME}/.clang-format
