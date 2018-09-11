@@ -91,6 +91,7 @@ set laststatus=2
 set wildmode=longest,list
 set wildmenu
 set pastetoggle=<F2>
+"set signcolumn=yes
 
 "////////////////////////////
 "// Plugin Specific Settings
@@ -157,7 +158,15 @@ imap <leader>ff <ESC>:pyf ~/.dotfiles/clang-format/clang-format.py<CR>i
 " YouCompleteMe
 let g:ycm_global_ycm_extra_conf = '~/.dotfiles/vim/ycm/ycm_extra_conf.py'
 let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_always_populate_location_list = 1
 set completeopt-=preview
+
+" sign column
+map <leader>sy :set signcolumn=yes<CR>
+imap <leader>sy <ESC>:set signcolumn=yes<CR>i
+map <leader>sn :set signcolumn=no<CR>
+imap <leader>sn <ESC>:set signcolumn=no<CR>i
+
 
 " NERDTree
 map <C-o> :NERDTreeToggle<CR>
