@@ -27,6 +27,7 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'nightsense/stellarized'
 Plugin 'morhetz/gruvbox'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'dense-analysis/ale'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -54,7 +55,7 @@ filetype plugin indent on
 
 syntax on
 set termguicolors
-if strftime('%H') >= 7 && strftime('%H') < 19
+if strftime('%H') >= 6 && strftime('%H') < 22
   set background=light
 else
   set background=dark
@@ -75,6 +76,7 @@ set guicursor=
 set showmode
 set nowrap
 set textwidth=0
+let g:leave_my_textwidth_alone=1
 set tabstop=2
 set expandtab
 set shiftwidth=2
@@ -192,3 +194,17 @@ imap <leader>ln <ESC>:lne<CR>i
 
 " NERDTree
 map <C-o> :NERDTreeToggle<CR>
+
+" ALE
+map <leader>ll :ALELint<CR>
+map <leader>li :ALEInfo<CR>
+"let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_error = 'ee'
+let g:ale_sign_warning = 'ww'
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_save = 0
+let g:ale_linters = {'cpp': ['clangtidy']}
+"let g:ale_linters = {'cpp': ['clangcheck', 'clangtidy', 'cppcheck', 'flawfinder']}
+"let g:ale_cpp_clangtidy_checks = ['-*' , 'abseil-*', 'boost-*', 'cert-*', 'cppcoreguidelines-*', '-cppcoreguidelines-pro-bounds-array-to-pointer-decay', 'clang-analyzer-*' , 'google-*', '-google-readability-braces-around-statements', 'hicpp-*', '-hicpp-no-array-decay', '-hicpp-braces-around-statements', 'performance-*']
