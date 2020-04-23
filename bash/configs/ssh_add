@@ -1,12 +1,12 @@
 ##shellscript
 
-if [ -z "${SSH_IDENTITY}" ]; then
+if [ -n "${SSH_IDENTITY}" ]; then
   identity=$(ssh-add -l | grep "${SSH_IDENTITY}")
   if [ -z "${identity}" ]; then
     echo ""
     echo "SSH | Adding identities to ssh agent..."
     ssh-add < /dev/null
-#else
+  #else
     #echo "SSH | identities already loaded in ssh agent"
   fi
 fi
