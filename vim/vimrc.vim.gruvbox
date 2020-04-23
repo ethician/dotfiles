@@ -152,6 +152,17 @@ endif
 "nmap <C-x> :q<CR>
 "imap <C-x> <ESC>:q<CR>i
 
+" clipboard
+"set clipboard+=unnamedplus
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+yg_
+nnoremap <leader>y "+y
+nnoremap <leader>yy "+yy
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P
+
 " tabs
 nnoremap <A-Left> :tabprevious<CR>
 nnoremap <A-Right> :tabnext<CR>
@@ -165,14 +176,18 @@ inoremap <A-Up> <ESC><C-y>i
 inoremap <A-Down> <ESC><C-e>i
 
 " clang-format
-map <leader>ff :pyf ~/.dotfiles/clang-format/clang-format.py<CR>
-imap <leader>ff <ESC>:pyf ~/.dotfiles/clang-format/clang-format.py<CR>i
+map <leader>ff :py3f ~/.dotfiles/clang-format/clang-format.py<CR>
+imap <leader>ff <ESC>:py3f ~/.dotfiles/clang-format/clang-format.py<CR>i
 
 " YouCompleteMe
 let g:ycm_global_ycm_extra_conf = '~/.dotfiles/vim/ycm/ycm_extra_conf.py'
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_always_populate_location_list = 1
+let g:ycm_python_binary_path = '/usr/bin/python3'
 set completeopt-=preview
+
+let g:loaded_python_provider = 0
+let g:python3_host_prog = '/usr/bin/python3'
 
 " sign column
 map <leader>sy :set signcolumn=yes<CR>
