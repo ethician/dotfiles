@@ -30,6 +30,8 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'dense-analysis/ale'
 Plugin 'vimwiki/vimwiki'
 Plugin 'vifm/vifm.vim'
+Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plugin 'junegunn/fzf.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -237,3 +239,11 @@ map <leader>vs :VsplitVifm<CR>
 map <leader>vS :SplitVifm<CR>
 map <leader>vd :DiffVifm<CR>
 map <leader>vt :TabVifm<CR>
+
+" fzf
+map <leader>oo :FZF<CR>
+map <leader>og :Rg<CR>
+
+" automatically remove trailing whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
+highlight ExtraWhitespace ctermbg=red guibg=red
