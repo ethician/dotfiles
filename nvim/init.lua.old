@@ -1,0 +1,1087 @@
+-- https://github.com/nvim-lualine/lualine.nvim
+-- https://vonheikemen.github.io/devlog/tools/neovim-plugins-to-get-started/
+-- https://dev.to/arunanshub/making-a-proper-initlua-for-real-this-time-4k44
+-- https://neovim.io/doc/user/lua-guide.html
+-- https://github.com/nanotee/nvim-lua-guide
+-- https://dev.to/voyeg3r/my-ever-growing-neovim-init-lua-h0p
+
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.cmd([[packadd packer.nvim]])
+    return true
+  end
+  return false
+end
+
+local packer_bootstrap = ensure_packer()
+
+-- improve startup
+vim.g.python_host_skip_check = 1
+vim.g.python3_host_skip_check = 1
+vim.g.python3_host_prog='/usr/bin/python3'
+vim.opt.pyxversion=3
+
+-- disable some builtins plugins
+local disabled_built_ins = {
+  "netrw",
+  "netrwPlugin",
+  "netrwSettings",
+  "netrwFileHandlers",
+  "gzip",
+  "zip",
+  "zipPlugin",
+  "tar",
+  "tarPlugin",
+  "getscript",
+  "getscriptPlugin",
+  "vimball",
+  "vimballPlugin",
+  "2html_plugin",
+  "logipat",
+  "rrhelper",
+  "spellfile_plugin",
+  "matchit"
+}
+
+for _, plugin in pairs(disabled_built_ins) do
+  vim.g["loaded_" .. plugin] = 1
+end
+
+vim.g.mapleader = ','
+vim.g.leave_my_textwidth_alone = 1
+
+vim.opt.swapfile = true
+
+vim.opt.colorcolumn = '80'
+vim.opt.number = true
+vim.opt.scrolloff = 2
+vim.opt.signcolumn = 'yes'
+
+vim.opt.encoding = "utf-8"
+vim.opt.fileencoding = "utf-8"
+
+vim.opt.syntax = "on"
+vim.g.backspace = 2
+
+vim.g.modelines = 0
+vim.o.showtabline = 2
+
+vim.o.updatetime = 250
+
+vim.o.compatible = false
+--vim.o.backspace = 2
+vim.o.cursorline = true
+vim.o.guicursor = ""
+vim.o.showmode = false
+vim.o.wrap = false
+vim.o.textwidth = 0
+vim.o.tabstop = 2
+vim.o.expandtab = true
+vim.o.shiftwidth = 2
+vim.o.shiftround = true
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.showmatch = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.hlsearch = true
+vim.o.incsearch = true
+vim.opt.listchars = "eol:¶,tab:›–,trail:~,extends:»,precedes:«,nbsp:·"
+vim.o.list = false
+vim.o.history = 1000
+vim.o.undolevels = 1000
+vim.o.title = true
+vim.o.backup = false
+vim.o.laststatus = 2
+vim.o.wildmode = "longest,list"
+vim.o.wildmenu = true
+vim.o.completeopt = 'menu,menuone'
+
+vim.cmd([[
+set nocompatible
+"set comments=sl:/*,mb:\ *,elx:\ */
+"set pastetoggle=<F2>
+
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
+" tmux control keys propagation
+if &term =~ '^screen'
+  " tmux will send xterm-style keys when its xterm-keys option is on
+  execute "set <xUp>=\e[1;*A"
+  execute "set <xDown>=\e[1;*B"
+  execute "set <xRight>=\e[1;*C"
+  execute "set <xLeft>=\e[1;*D"
+endif
+
+augroup YankHighlight
+autocmd!
+autocmd TextYankPost * silent! lua vim.highlight.on_yank()
+augroup endif
+]])
+
+local opts = { noremap = true, silent = true }
+
+-- highlight
+vim.keymap.set('n', '<C-/>', ':noh<CR>', opts)
+vim.keymap.set('i', '<C-/>', '<ESC>:noh<CR>a', opts)
+
+-- clipboard
+vim.keymap.set('v', '<leader>y', '"+y', opts)
+vim.keymap.set('n', '<leader>Y', '"+yg_', opts)
+vim.keymap.set('n', '<leader>y', '"+y', opts)
+vim.keymap.set('n', '<leader>yy', '"+yy', opts)
+vim.keymap.set('n', '<leader>p', '"+p', opts)
+vim.keymap.set('n', '<leader>P', '"+P', opts)
+vim.keymap.set('v', '<leader>p', '"+p', opts)
+vim.keymap.set('v', '<leader>P', '"+P', opts)
+
+-- tabs operations
+vim.keymap.set('n', '<A-Left>', ":tabprevious<CR>", opts)
+vim.keymap.set('n', '<A-Right>', ":tabnext<CR>", opts)
+vim.keymap.set('i', '<A-Left>', "<ESC>:tabprevious<CR>", opts)
+vim.keymap.set('i', '<A-Right>', "<ESC>:tabnext<CR>", opts)
+vim.keymap.set('n', '<C-Left>', ":tabmove -1<CR>", opts)
+vim.keymap.set('n', '<C-Right>', ":tabmove +1<CR>", opts)
+vim.keymap.set('i', '<C-Left>', "<ESC>:tabmove -1<CR>", opts)
+vim.keymap.set('i', '<C-Right>', "<ESC>:tabmove +1<CR>", opts)
+
+-- screen movement
+vim.keymap.set('n', '<A-Up>', '<C-y>', opts)
+vim.keymap.set('n', '<A-Down>', '<C-e>', opts)
+vim.keymap.set('i', '<A-Up>', '<ESC><C-y>a', opts)
+vim.keymap.set('i', '<A-Down>', '<ESC><C-e>a', opts)
+
+-- background
+vim.keymap.set('n', '<leader>bd', ':set background=dark<CR>', opts)
+vim.keymap.set('n', '<leader>bl', ':set background=light<CR>', opts)
+
+-- toggle list
+vim.keymap.set('n', '<leader>il', function() vim_opt_toggle("list", true, false, "List") end, { desc = "Toggle list hidden chars"})
+
+-- Packer
+require('packer').startup(function(use)
+  use 'wbthomason/packer.nvim'
+
+  -- git
+  use 'tpope/vim-fugitive'
+  use {
+    'lewis6991/gitsigns.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+    config = function() require('gitsigns').setup() end
+  }
+
+  use {
+    'ellisonleao/gruvbox.nvim',
+    lazy = false,
+    priority = 1000,
+    requires = { 'rktjmp/lush.nvim' }
+  }
+
+  -- lsp
+  use {
+    'mason-org/mason-lspconfig.nvim',
+    requires = {
+      'mason-org/mason.nvim',
+      'neovim/nvim-lspconfig',
+    }
+  }
+
+  -- lsp customizations
+  -- show VSCode-esque pictograms
+  use 'onsails/lspkind-nvim'
+  -- show various elements of LSP as UI
+  use {'nvimdev/lspsaga.nvim', requires = {'neovim/nvim-lspconfig'}}
+
+  -- autocompletion plugin
+  use {
+    'hrsh7th/nvim-cmp',
+    requires = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+    }
+  }
+
+  -- snippets
+  use {
+    'hrsh7th/cmp-vsnip', requires = {
+      'hrsh7th/vim-vsnip',
+      'rafamadriz/friendly-snippets',
+    }
+  }
+
+  -- tabline
+  use 'ethician/nvim-tabline'
+
+  -- statusline
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = {
+      'nvim-tree/nvim-web-devicons',
+      'arkav/lualine-lsp-progress',
+    },
+  }
+
+  -- fast incremental parsing library
+  --use 'nvim-treesitter/nvim-treesitter'
+
+  -- commenting
+  use "scrooloose/nerdcommenter"
+
+  -- telescope
+  use {
+    "nvim-telescope/telescope-file-browser.nvim",
+    requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+  }
+
+	use {
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v2.x",
+		requires = { 
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+			"MunifTanjim/nui.nvim",
+			{
+				-- only needed if you want to use the commands with "_with_window_picker" suffix
+				's1n7ax/nvim-window-picker',
+				tag = "v1.*",
+				config = function()
+					require'window-picker'.setup({
+						autoselect_one = true,
+						include_current = false,
+						filter_rules = {
+							-- filter using buffer options
+							bo = {
+								-- if the file type is one of following, the window will be ignored
+								filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+
+								-- if the buffer type is one of following, the window will be ignored
+								buftype = { 'terminal', "quickfix" },
+							},
+						},
+						other_win_hl_color = '#e35e4f',
+					})
+				end,
+			}
+		},
+	}
+
+  -- debugging
+  use { "mfussenegger/nvim-dap", requires = {"nvim-neotest/nvim-nio"} }
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+
+  -- hex editing
+  use 'RaafatTurki/hex.nvim'
+
+  -- Automatically set up your configuration after cloning packer.nvim
+  -- Put this at the end after all plugins
+  if packer_bootstrap then
+    require('packer').sync()
+  end
+end)
+
+-- colorscheme
+require("gruvbox").setup({
+  undercurl = true,
+  underline = true,
+  bold = true,
+  italic = {
+    strings = true,
+    comments = true,
+    operators = false,
+    folds = true,
+  },
+  strikethrough = true,
+  invert_selection = false,
+  invert_signs = false,
+  invert_tabline = false,
+  invert_intend_guides = false,
+  inverse = true, -- invert background for search, diffs, statuslines and errors
+  contrast = "soft", -- can be "hard", "soft" or empty string
+  palette_overrides = {},
+  overrides = {},
+  dim_inactive = false,
+  transparent_mode = false,
+})
+vim.o.background = 'light'
+vim.cmd("colorscheme gruvbox")
+
+-- LSP
+local lspconfig = require('lspconfig')
+require("mason").setup()
+require('mason-lspconfig').setup({
+  ensure_installed = {
+    'clangd',
+  },
+  automatic_enable = true,
+})
+
+local on_attach = function(client, bufnr)
+  client.server_capabilities.semanticTokensProvider = nil
+
+  local function map(mode, l, r, opts)
+    opts = opts or {}
+    opts.buffer = bufnr
+    vim.keymap.set(mode, l, r, opts)
+  end
+
+  function format_current_line()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    vim.lsp.buf.format({
+      range = {
+        ["start"] = { line, 0 },
+        ["end"] = { line, -1 }
+      }
+    })
+  end
+
+  -- enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- keymaps
+  map('n', '<leader>dd', vim.lsp.buf.declaration, opts)
+  map('n', '<leader>dD', vim.lsp.buf.definition, opts)
+  --[[
+  map('n', '<leader>di', vim.lsp.buf.implementation, opts)
+  map('n', '<leader>ds', vim.lsp.buf.signature_help, opts)
+  map('n', '<leader>dt', vim.lsp.buf.type_definition, opts)
+  map('n', '<leader>rn', vim.lsp.buf.rename, opts)
+  map('n', '<leader>aa', vim.lsp.buf.code_action, opts)
+  map('n', '<leader>dr', vim.lsp.buf.references, opts)
+  --]]
+  map('n', '<leader>dp', '<cmd>Lspsaga preview_definition<CR>', opts)
+  map('n', '<leader>di', '<cmd>Lspsaga implementation<CR>', opts)
+  map('n', '<leader>ds', '<cmd>Lspsaga signature_help<CR>', opts)
+  map('n', '<leader>rn', '<cmd>Lspsaga rename<CR>', opts)
+  map('n', '<leader>aa', '<cmd>Lspsaga code_action<CR>', opts)
+  map('n', '<leader>dr', '<cmd>Lspsaga lsp_finder<CR>', opts)
+
+  -- formatting
+  map('n', '<leader>ff', '<cmd>lua format_current_line()<CR>', { remap = false })
+  map('n', '<leader>fF', vim.lsp.buf.format, { remap = false })
+  map('v', '<leader>ff', '<cmd>lua vim.lsp.buf.format()<CR><ESC>', { remap = false })
+
+  -- floating terminal
+  -- NOTE: Use `vim.cmd` since `buf_set_keymap` is not working with `tnoremap...`
+  --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<A-d>', "<cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>", opts);
+  --vim.cmd([[tnoremap <silent> <A-d> <C-\><C-n>:lua require('lspsaga.floaterm').close_float_terminal()<CR>]])
+end
+
+vim.lsp.config('clangd', {
+  cmd = {
+    "clangd",
+    "-j=2",
+    "--clang-tidy",
+    "--clang-tidy-checks=*",
+    "--completion-style=detailed",
+    "--background-index",
+    "--background-index-priority=low",
+    "--header-insertion=never",
+    "--enable-config"
+  },
+  on_attach = on_attach
+})
+
+--lspconfig.zls.setup({
+vim.lsp.config('zls', {
+	capabilities = capabilities,
+	on_attach = on_attach,
+	cmd = { "zls" },
+	filetypes = { "zig", "zir" },
+	root_dir = lspconfig.util.root_pattern("zls.json", "build.zig", ".git"),
+	single_file_support = true,
+})
+
+--[[
+local server_specific_opts = {
+  lua_ls = function(opts)
+    opts.settings = {
+      Lua = {
+        -- NOTE: This is required for expansion of lua function signatures!
+        completion = {callSnippet = "Replace"},
+        diagnostics = {
+          globals = {'vim'},
+        },
+      },
+    }
+  end,
+
+  clangd = function(opts)
+    opts.cmd = {
+      "clangd",
+      "-j=2",
+      "--clang-tidy",
+      "--clang-tidy-checks=*",
+      "--completion-style=detailed",
+      "--background-index",
+      "--background-index-priority=low",
+      "--header-insertion=never"
+    }
+  end,
+
+  html = function(opts)
+    opts.filetypes = {"html", "htmldjango"}
+  end,
+}
+--]]
+
+-- `nvim-cmp` comes with additional capabilities, alongside the ones
+-- provided by Neovim!
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
+--[[
+lsp_installer.on_server_ready(function(server)
+  -- the keymaps, flags and capabilities that will be sent to the server as
+  -- options.
+  local opts = {
+    on_attach = on_attach,
+    flags = {debounce_text_changes = 150},
+    capabilities = capabilities,
+  }
+
+  -- If the current surver's name matches with the ones specified in the
+  -- `server_specific_opts`, set the options.
+  if server_specific_opts[server.name] then
+    server_specific_opts[server.name](opts)
+  end
+
+  -- And set up the server with our configuration!
+  server:setup(opts)
+end)
+--]]
+
+local lspkind = require('lspkind')
+local cmp = require("cmp")
+
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
+
+local cmp_kinds = {
+  Text = "󰉿",
+  Method = "󰆧",
+  Function = "󰊕",
+  Constructor = "",
+  Field = "󰜢",
+  Variable = "󰀫",
+  Class = "󰠱",
+  Interface = "",
+  Module = "",
+  Property = "󰜢",
+  Unit = "󰑭",
+  Value = "󰎠",
+  Enum = "",
+  Keyword = "󰌋",
+  Snippet = "",
+  Color = "󰏘",
+  File = "󰈙",
+  Reference = "󰈇",
+  Folder = "󰉋",
+  EnumMember = "",
+  Constant = "󰏿",
+  Struct = "󰙅",
+  Event = "",
+  Operator = "󰆕",
+  TypeParameter = "",
+}
+
+cmp.setup({
+  -- Add your configuration here!
+
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+
+  formatting = {
+    format = lspkind.cmp_format({
+      --with_text = true,
+      preset = 'codicons',
+      symbol_map = cmp_kinds, -- The glyphs will be used by `lspkind`
+      menu = ({
+        buffer = "[buf]",
+        nvim_lsp = "[lsp]",
+        luasnip = "[snip]",
+        nvim_lua = "[lua]",
+        latex_symbols = "[tex]",
+      }),
+    }),
+  },
+
+  mapping = {
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    --[[['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },]]
+
+    -- Use Tab and Shift-Tab to browse through the suggestions.
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif vim.fn["vsnip#available"](1) == 1 then
+        feedkey("<Plug>(vsnip-expand-or-jump)", "")
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+        feedkey("<Plug>(vsnip-jump-prev)", "")
+      end
+    end, { "i", "s" }),
+  },
+
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+    { name = 'buffer' },
+  },
+
+  enabled = function()
+    -- disable completion in comments
+    local context = require 'cmp.config.context'
+    -- keep command mode completion enabled when cursor is in a comment
+    if vim.api.nvim_get_mode().mode == 'c' then
+      return true
+    else
+      return not context.in_treesitter_capture("comment") 
+        and not context.in_syntax_group("Comment")
+    end
+  end,
+})
+
+
+-- Use buffer source for `/`
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':'
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources(
+    {{ name = 'path' }},
+    {{ name = 'cmdline' }}
+  )
+})
+
+require('lualine').setup({
+  sections = {
+    lualine_c = {
+      {'filename', path = 1},
+      'lsp_progress',
+    },
+  },
+})
+
+--[[
+require('nvim-treesitter.configs').setup({
+  ensure_installed = {
+    "c",
+    "cpp",
+    "cmake",
+    "go",
+    "python",
+    "rust",
+    "bash",
+    "html",
+    "markdown",
+    "markdown_inline",
+    "toml",
+    "yaml",
+    "json",
+  },
+  highlight = {
+    enable = true, -- false will disable the whole extension
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+    disable = function(lang, buf)
+      local max_filesize = 100 * 1024 -- 100 KB
+      local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+      if ok and stats and stats.size > max_filesize then
+        return true
+      end
+    end,
+  },
+})
+--]]
+
+require("lspsaga").setup({
+  finder_action_keys = {
+    open = '<CR>',
+    quit = {'q', '<esc>'},
+  },
+  code_action_keys = {
+    exec = '<CR>',
+    quit = {'q', '<esc>'},
+  },
+  rename_action_keys = {
+    exec = '<CR>',
+    quit = '<esc>',
+  },
+  code_action_icon = "󱐋 ",
+  diagnostic_header_icon = "   ",
+  definition_preview_icon = "  ",
+  border_style = "single",
+  --[[
+  error_sign = '',
+  warn_sign = '',
+  hint_sign = '',
+  infor_sign = '',
+  --]]
+})
+
+-- diagnostics
+--[[
+local signs = {
+    Error = "",
+    Warning = "",
+    Hint = "",
+    Information = ""
+}
+
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, {text = icon, texthl = hl, numhl = hl})
+end
+--]]
+
+vim.diagnostic.config({
+  virtual_text = false,
+  --underline = false,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.INFO] = "",
+      [vim.diagnostic.severity.HINT] = "",
+    },
+    --linehl = {
+      --[vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+    --},
+    texthl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSign',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+    },
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSign',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+      --[vim.diagnostic.severity.WARN] = 'WarningMsg',
+    },
+  }
+})
+
+-- show line diagnostics automatically in hover window
+vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus = false})]])
+
+--[[
+vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_prev, opts);
+vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_next, opts);
+--]]
+vim.keymap.set('n', '<leader>d[', '<cmd>Lspsaga diagnostic_jump_prev<CR>', opts);
+vim.keymap.set('n', '<leader>d]', '<cmd>Lspsaga diagnostic_jump_next<CR>', opts);
+
+-- tabline
+require('tabline').setup({
+  show_index = true,
+  show_modify = true,
+  show_icon = false,
+  shorten_path = false,
+  shorten_path_fully = false,
+  shorten_indicator = '…',
+  separator = ' ',
+  scroll_left = ' ',
+  scroll_right = ' ',
+  fnamemodify = ':.:gs?\\.\\.?‥?',
+  modify_indicator = '',
+  header = '   ',
+  footer = '',
+  prefix = '',
+  suffix = '',
+  active_prefix = '',
+  active_suffix = '',
+  tab_max_length = 0,
+  filename_max_length = 0,
+})
+
+-- commenting
+
+-- telescope
+local telescope_builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>tf', telescope_builtin.find_files, {})
+vim.keymap.set('n', '<leader>tg', telescope_builtin.live_grep, {})
+--vim.keymap.set('n', '<leader>tb', telescope_builtin.buffers, {})
+vim.keymap.set('n', '<leader>tb', ":Telescope file_browser<CR>", {})
+vim.keymap.set('n', '<leader>th', telescope_builtin.help_tags, {})
+
+require ('telescope').setup({
+  extensions = {
+    file_browser = {
+      mappings = {
+        ["i"] = {
+          ["<C-t>"] = require ('telescope.actions').select_tab
+        }
+      }
+    }
+  }
+})
+
+require("telescope").load_extension "file_browser"
+
+-- neo-tree
+
+-- Unless you are still migrating, remove the deprecated commands from v1.x
+vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+
+-- If you want icons for diagnostic errors, you'll need to define them somewhere:
+--vim.fn.sign_define("DiagnosticSignError", {text = " ", texthl = "DiagnosticSignError"})
+--vim.fn.sign_define("DiagnosticSignWarn", {text = " ", texthl = "DiagnosticSignWarn"})
+--vim.fn.sign_define("DiagnosticSignInfo", {text = " ", texthl = "DiagnosticSignInfo"})
+--vim.fn.sign_define("DiagnosticSignHint", {text = "", texthl = "DiagnosticSignHint"})
+-- NOTE: this is changed from v1.x, which used the old style of highlight groups
+-- in the form "LspDiagnosticsSignWarning"
+
+require("neo-tree").setup({
+	close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
+	popup_border_style = "rounded",
+	enable_git_status = true,
+	enable_diagnostics = true,
+	open_files_do_not_replace_types = { "terminal", "trouble", "qf" }, -- when opening files, do not use windows containing these filetypes or buftypes
+	sort_case_insensitive = false, -- used when sorting files and directories in the tree
+	sort_function = nil , -- use a custom function for sorting files and directories in the tree 
+	-- sort_function = function (a,b)
+	--       if a.type == b.type then
+	--           return a.path > b.path
+	--       else
+	--           return a.type > b.type
+	--       end
+	--   end , -- this sorts files and directories descendantly
+	default_component_configs = {
+		container = {
+			enable_character_fade = true
+		},
+		indent = {
+			indent_size = 2,
+			padding = 1, -- extra padding on left hand side
+			-- indent guides
+			with_markers = true,
+			indent_marker = "│",
+			last_indent_marker = "└",
+			highlight = "NeoTreeIndentMarker",
+			-- expander config, needed for nesting files
+			with_expanders = nil, -- if nil and file nesting is enabled, will enable expanders
+			expander_collapsed = "",
+			expander_expanded = "",
+			expander_highlight = "NeoTreeExpander",
+		},
+		icon = {
+			folder_closed = "",
+			folder_open = "",
+			folder_empty = "ﰊ",
+			-- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
+			-- then these will never be used.
+			default = "*",
+			highlight = "NeoTreeFileIcon"
+		},
+		modified = {
+			symbol = "[+]",
+			highlight = "NeoTreeModified",
+		},
+		name = {
+			trailing_slash = false,
+			use_git_status_colors = true,
+			highlight = "NeoTreeFileName",
+		},
+		git_status = {
+			symbols = {
+				-- Change type
+				added     = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
+				modified  = "", -- or "", but this is redundant info if you use git_status_colors on the name
+				deleted   = "✖",-- this can only be used in the git_status source
+				renamed   = "󰁕",-- this can only be used in the git_status source
+				-- Status type
+				untracked = "",
+				ignored   = "",
+				unstaged  = "󰄱",
+				staged    = "",
+				conflict  = "",
+			}
+		},
+	},
+	-- A list of functions, each representing a global custom command
+	-- that will be available in all sources (if not overridden in `opts[source_name].commands`)
+	-- see `:h neo-tree-global-custom-commands`
+	commands = {},
+	window = {
+		position = "left",
+		width = 40,
+		mapping_options = {
+			noremap = true,
+			nowait = true,
+		},
+		mappings = {
+			["<space>"] = { 
+					"toggle_node", 
+					nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use 
+			},
+			["<2-LeftMouse>"] = "open",
+			["<cr>"] = "open",
+			["<esc>"] = "revert_preview",
+			["P"] = { "toggle_preview", config = { use_float = true } },
+			["l"] = "focus_preview",
+			["S"] = "open_split",
+			["s"] = "open_vsplit",
+			-- ["S"] = "split_with_window_picker",
+			-- ["s"] = "vsplit_with_window_picker",
+			["t"] = "open_tabnew",
+			-- ["<cr>"] = "open_drop",
+			-- ["t"] = "open_tab_drop",
+			["w"] = "open_with_window_picker",
+			--["P"] = "toggle_preview", -- enter preview mode, which shows the current node without focusing
+			["C"] = "close_node",
+			-- ['C'] = 'close_all_subnodes',
+			["z"] = "close_all_nodes",
+			--["Z"] = "expand_all_nodes",
+			["a"] = { 
+				"add",
+				-- this command supports BASH style brace expansion ("x{a,b,c}" -> xa,xb,xc). see `:h neo-tree-file-actions` for details
+				-- some commands may take optional config options, see `:h neo-tree-mappings` for details
+				config = {
+					show_path = "none" -- "none", "relative", "absolute"
+				}
+			},
+			["A"] = "add_directory", -- also accepts the optional config.show_path option like "add". this also supports BASH style brace expansion.
+			["d"] = "delete",
+			["r"] = "rename",
+			["y"] = "copy_to_clipboard",
+			["x"] = "cut_to_clipboard",
+			["p"] = "paste_from_clipboard",
+			["c"] = "copy", -- takes text input for destination, also accepts the optional config.show_path option like "add":
+			-- ["c"] = {
+			--  "copy",
+			--  config = {
+			--    show_path = "none" -- "none", "relative", "absolute"
+			--  }
+			--}
+			["m"] = "move", -- takes text input for destination, also accepts the optional config.show_path option like "add".
+			["q"] = "close_window",
+			["R"] = "refresh",
+			["?"] = "show_help",
+			["<"] = "prev_source",
+			[">"] = "next_source",
+		}
+	},
+	nesting_rules = {},
+	filesystem = {
+		filtered_items = {
+			visible = false, -- when true, they will just be displayed differently than normal items
+			hide_dotfiles = true,
+			hide_gitignored = true,
+			hide_hidden = true, -- only works on Windows for hidden files/directories
+			hide_by_name = {
+				--"node_modules"
+			},
+			hide_by_pattern = { -- uses glob style patterns
+				--"*.meta",
+				--"*/src/*/tsconfig.json",
+			},
+			always_show = { -- remains visible even if other settings would normally hide it
+				--".gitignored",
+			},
+			never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
+				--".DS_Store",
+				--"thumbs.db"
+			},
+			never_show_by_pattern = { -- uses glob style patterns
+				--".null-ls_*",
+			},
+		},
+		follow_current_file = false, -- This will find and focus the file in the active buffer every
+																-- time the current file is changed while the tree is open.
+		group_empty_dirs = false, -- when true, empty folders will be grouped together
+		hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
+																						-- in whatever position is specified in window.position
+													-- "open_current",  -- netrw disabled, opening a directory opens within the
+																						-- window like netrw would, regardless of window.position
+													-- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
+		use_libuv_file_watcher = false, -- This will use the OS level file watchers to detect changes
+																		-- instead of relying on nvim autocmd events.
+		window = {
+			mappings = {
+				["<bs>"] = "navigate_up",
+				["."] = "set_root",
+				["H"] = "toggle_hidden",
+				["/"] = "fuzzy_finder",
+				["D"] = "fuzzy_finder_directory",
+				["#"] = "fuzzy_sorter", -- fuzzy sorting using the fzy algorithm
+				-- ["D"] = "fuzzy_sorter_directory",
+				["f"] = "filter_on_submit",
+				["<c-x>"] = "clear_filter",
+				["[g"] = "prev_git_modified",
+				["]g"] = "next_git_modified",
+			},
+			fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
+				["<down>"] = "move_cursor_down",
+				["<C-n>"] = "move_cursor_down",
+				["<up>"] = "move_cursor_up",
+				["<C-p>"] = "move_cursor_up",
+			},
+		},
+
+		commands = {} -- Add a custom command or override a global one using the same function name
+	},
+	buffers = {
+		follow_current_file = true, -- This will find and focus the file in the active buffer every
+																-- time the current file is changed while the tree is open.
+		group_empty_dirs = true, -- when true, empty folders will be grouped together
+		show_unloaded = true,
+		window = {
+			mappings = {
+				["bd"] = "buffer_delete",
+				["<bs>"] = "navigate_up",
+				["."] = "set_root",
+			}
+		},
+	},
+	git_status = {
+		window = {
+			position = "float",
+			mappings = {
+				["A"]  = "git_add_all",
+				["gu"] = "git_unstage_file",
+				["ga"] = "git_add_file",
+				["gr"] = "git_revert_file",
+				["gc"] = "git_commit",
+				["gp"] = "git_push",
+				["gg"] = "git_commit_and_push",
+			}
+		}
+	}
+})
+
+vim.keymap.set('n', '\\', ':Neotree reveal<CR>', opts)
+--vim.cmd([[nnoremap \ :Neotree reveal<cr>]])
+
+-- quick fix
+local function quickfix()
+  vim.lsp.buf.code_action({
+    filter = function(a) return a.isPreferred end,
+    apply = true
+  })
+end
+
+vim.keymap.set('n', '<leader>af', quickfix, opts)
+
+-- debugging
+require("dapui").setup({
+  controls = {
+    element = "repl",
+    enabled = true,
+    icons = {
+      disconnect = "",
+      pause = "",
+      play = "",
+      run_last = "",
+      step_back = "",
+      step_into = "",
+      step_out = "",
+      step_over = "",
+      terminate = ""
+    }
+  }
+})
+vim.keymap.set('n', '<leader>bt', function() require('dapui').toggle() end, opts)
+
+local dap = require('dap')
+dap.adapters.cppdbg = {
+  id = 'cppdbg',
+  type = 'executable',
+  command = '/home/tom/.vscode/extensions/ms-vscode.cpptools-1.15.4-linux-x64/debugAdapters/bin/OpenDebugAD7',
+}
+dap.set_log_level('TRACE')
+dap.configurations.cpp = {
+  {
+    name = "neovim",
+    type = "cppdbg",
+    request = "launch",
+    program = function()
+      local e = "${env:DAP_PROGRAM}"
+      if (e == nil or e == '') then
+        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+      else
+        return e
+      end
+    end,
+    args = {
+        "-c",
+        "${env:DAP_PROGRAM_CONF}"
+    },
+    MIMode = 'gdb',
+    miDebuggerPath = function()
+      local e = "${env:DAP_DEBUGGER}"
+      if (e == nil or e == '') then
+        return '/usr/bin/gdb'
+      else
+        return e
+      end
+    end,
+    cwd = '${workspaceFolder}',
+    stopAtEntry = true,
+    externalConsole = false,
+    runInTerminal = true,
+    console = 'integratedTerminal',
+    setupCommands = {  
+      { 
+        text = '-enable-pretty-printing',
+        description = 'enable pretty printing',
+        ignoreFailures = false 
+      }
+    },
+  }
+}
+--[[
+dap.defaults.fallback.external_terminal = {
+  command = '/usr/bin/alacritty',
+  args = {'-e'}
+}
+dap.defaults.fallback.focus_terminal = true
+--]]
+
+vim.keymap.set('n', '<F5>', function() require('dap').continue() end, opts)
+vim.keymap.set('n', '<F6>', function() require('dap').step_over() end, opts)
+vim.keymap.set('n', '<F7>', function() require('dap').step_into() end, opts)
+vim.keymap.set('n', '<F8>', function() require('dap').step_out() end, opts)
+vim.keymap.set('n', '<leader>bb', function() require('dap').toggle_breakpoint() end, opts)
+
+-- hex editing
+require 'hex'.setup()
