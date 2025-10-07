@@ -1,7 +1,6 @@
 ##shellscript
 
-#//////////////////////////
-#// interactive shell only
+# #interactive shell only
 
 case $- in
   *i*)
@@ -11,16 +10,14 @@ case $- in
     ;;
 esac
 
-#///////////
-#// history
+## history
 
 HISTCONTROL=ignoreboth
 HISTSIZE=1000
 HISTFILESIZE=2000
 shopt -s histappend
 
-#//////////
-#// color
+## color
 
 [ "${COLORTERM}" == "gnome-terminal" ] && export TERM=xterm-256color
 case "${TERM}" in
@@ -45,8 +42,7 @@ case "${OSTYPE}" in
     ;;
 esac
 
-#//////////
-#// prompt
+## prompt
 
 if [ "${color_prompt}" = yes ]; then
   root='\033[1;38;5;160m'
@@ -72,15 +68,13 @@ case "${TERM}" in
     ;;
 esac
 
-#//////////////////
-#// other settings
+## other settings
 
 shopt -s checkwinsize
 #shopt -s globstar
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-#///////////////////
-#// bash completion
+## bash completion
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -90,8 +84,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-#//////////////////
-#// custom configs
+## custom configs
 
 for config in $(find ${HOME}/.dotfiles/bash/configs/* 2> /dev/null)
 do

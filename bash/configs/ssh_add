@@ -1,12 +1,24 @@
 ##shellscript
 
-if [ -n "${SSH_IDENTITY}" ]; then
-  identity=$(ssh-add -l | grep "${SSH_IDENTITY}")
-  if [ -z "${identity}" ]; then
-    echo ""
+socket="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+
+if [ -n "${SSH_CONNECTION}" ]; then
+  if [ ! -S ${socket} ]; then
+    echo "SSH | starting agent..."
+    ssh-agent -a ${socket} &> /dev/null
+    export SSH_AUTH_SOCK=${socket}
     echo "SSH | Adding identities to ssh agent..."
     ssh-add < /dev/null
-  #else
-    #echo "SSH | identities already loaded in ssh agent"
   fi
 fi
+
+#if [ -n "${SSH_IDENTITY}" ]; then
+#  identity=$(ssh-add -l | grep "${SSH_IDENTITY}")
+#  if [ -z "${identity}" ]; then
+#    echo ""
+#    echo "SSH | Adding identities to ssh agent..."
+#    ssh-add < /dev/null
+#  #else
+#    #echo "SSH | identities already loaded in ssh agent"
+#  fi
+#fi
