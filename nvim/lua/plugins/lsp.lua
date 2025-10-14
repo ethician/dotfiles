@@ -102,7 +102,7 @@ return {
       ---@alias lazyvim.lsp.Config vim.lsp.Config|{mason?:boolean, enabled?:boolean}
       ---@type table<string, lazyvim.lsp.Config|boolean>
       servers = {
-        clangd = {},
+        clangd = { enabled = true },
         stylua = { enabled = false },
         lua_ls = {
           -- mason = false, -- set to false if you don't want this server to be installed with mason
@@ -150,7 +150,7 @@ return {
             "clangd",
             "-j=3",
             "--clang-tidy",
-            -- OBSOLETE "--clang-tidy-checks=*",
+            -- "--log=verbose",
             "--completion-style=detailed",
             "--background-index",
             "--background-index-priority=low",
@@ -171,8 +171,11 @@ return {
     -- setup autoformat
     LazyVim.format.register(LazyVim.lsp.formatter())
 
-    -- setup keymaps
+    -- setup keymaps and disable semantic tokens
     LazyVim.lsp.on_attach(function(client, buffer)
+      -- disable semantic tokens
+      -- client.server_capabilities.semanticTokensProvider = nil
+      -- setup keymaps
       require("lazyvim.plugins.lsp.keymaps").on_attach(client, buffer)
     end)
 
@@ -229,6 +232,11 @@ return {
     if opts.capabilities then
       vim.lsp.config("*", { capabilities = opts.capabilities })
     end
+
+    -- disable semantic highlights
+    -- for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+    --   vim.api.nvim_set_hl(0, group, {})
+    -- end
 
     -- get all the servers that are available through mason-lspconfig
     local have_mason = LazyVim.has("mason-lspconfig.nvim")

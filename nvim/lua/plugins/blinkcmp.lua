@@ -25,8 +25,19 @@ return {
     -- C-k: Toggle signature help (if signature.enabled = true)
     --
     -- See :h blink-cmp-config-keymap for defining your own keymap
-    keymap = { preset = "super-tab" },
+    keymap = {
+      preset = "enter",
+      ["<Tab>"] = { "insert_next", "fallback" },
+      ["<S-Tab>"] = { "insert_prev", "fallback" },
+    },
 
+    cmdline = {
+      keymap = {
+        preset = "inherit",
+        ["<CR>"] = { "accept_and_enter", "fallback" },
+      },
+      completion = { menu = { auto_show = true } },
+    },
     -- appearance = {
     --   -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
     --   -- Adjusts spacing to ensure icons are aligned
