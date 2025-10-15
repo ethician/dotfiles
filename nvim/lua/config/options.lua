@@ -4,6 +4,8 @@
 
 vim.g.mapleader = ","
 
+vim.g.autoformat = false
+
 vim.g.snacks_animate = false
 --vim.g.snacks_animate_scroll = false
 --vim.g.snacks_animate_indent = false
