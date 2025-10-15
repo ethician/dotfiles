@@ -27,9 +27,25 @@ return {
     -- See :h blink-cmp-config-keymap for defining your own keymap
     keymap = {
       preset = "enter",
-      ["<Tab>"] = { "insert_next", "fallback" },
-      ["<S-Tab>"] = { "insert_prev", "fallback" },
+      ["<Tab>"] = {
+        function(cmp)
+          local index = cmp.get_selected_item_idx()
+          if index == nil then
+            return cmp.select_next({ count = 0 })
+          else
+            return cmp.select_next()
+          end
+        end,
+        "select_next",
+        "fallback",
+      },
+      ["<S-Tab>"] = {
+        "select_prev",
+        "fallback",
+      },
     },
+
+    completion = { list = { selection = { preselect = false, auto_insert = true } } },
 
     cmdline = {
       keymap = {
