@@ -1,33 +1,3 @@
--- return {
---   "neovim/nvim-lspconfig",
---   opts = {
---     inlay_hints = { enabled = false },
---
---     servers = {
---       clangd = {},
---     },
---
---     setup = {
---       clangd = function(_, opts)
---         opts.cmd = {
---           "clangd",
---           "-j=3",
---           "--clang-tidy",
---           -- OBSOLETE "--clang-tidy-checks=*",
---           "--completion-style=detailed",
---           "--background-index",
---           "--background-index-priority=low",
---           "--header-insertion=never",
---           "--enable-config",
---         }
---         -- return true if you don't want this server to be setup with lspconfig
---         -- return true
---       end,
---       -- Specify * to use this function as a fallback for any server
---       -- ["*"] = function(server, opts) end,
---     },
---   },
--- }
 return {
   "neovim/nvim-lspconfig",
   event = "LazyFile",
@@ -35,10 +5,8 @@ return {
     "mason.nvim",
     { "mason-org/mason-lspconfig.nvim", config = function() end },
   },
+  opts_extend = { "servers.*.keys" },
   opts = function()
-    local keys = require("lazyvim.plugins.lsp.keymaps").get()
-    keys[#keys + 1] = { "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" }
-
     ---@class PluginLspOpts
     local ret = {
       -- options for vim.diagnostic.config()
@@ -82,15 +50,6 @@ return {
       folds = {
         enabled = true,
       },
-      -- add any global capabilities here
-      capabilities = {
-        workspace = {
-          fileOperations = {
-            didRename = true,
-            willRename = true,
-          },
-        },
-      },
       -- options for vim.lsp.buf.format
       -- `bufnr` and `filter` is handled by the LazyVim formatter,
       -- but can be also overridden when specified
@@ -99,10 +58,53 @@ return {
         timeout_ms = nil,
       },
       -- LSP Server Settings
-      ---@alias lazyvim.lsp.Config vim.lsp.Config|{mason?:boolean, enabled?:boolean}
+      -- Sets the default configuration for an LSP client (or all clients if the special name "*" is used).
+      ---@alias lazyvim.lsp.Config vim.lsp.Config|{mason?:boolean, enabled?:boolean, keys?:LazyKeysLspSpec[]}
       ---@type table<string, lazyvim.lsp.Config|boolean>
       servers = {
-        clangd = { enabled = true },
+        -- configuration for all lsp servers
+        ["*"] = {
+          capabilities = {
+            workspace = {
+              fileOperations = {
+                didRename = true,
+                willRename = true,
+              },
+            },
+          },
+          -- stylua: ignore
+          keys = {
+            { "<leader>cl", function() Snacks.picker.lsp_config() end, desc = "Lsp Info" },
+            { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
+            { "gr", vim.lsp.buf.references, desc = "References", nowait = true },
+            { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
+            { "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
+            { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+            { "K", function() return vim.lsp.buf.hover() end, desc = "Hover" },
+            { "gK", function() return vim.lsp.buf.signature_help() end, desc = "Signature Help", has = "signatureHelp" },
+            { "<c-k>", function() return vim.lsp.buf.signature_help() end, mode = "i", desc = "Signature Help", has = "signatureHelp" },
+            { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "x" }, has = "codeAction" },
+            { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "x" }, has = "codeLens" },
+            { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
+            { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", mode ={"n"}, has = { "workspace/didRenameFiles", "workspace/willRenameFiles" } },
+            { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" },
+            { "<leader>cA", LazyVim.lsp.action.source, desc = "Source Action", has = "codeAction" },
+            { "]]", function() Snacks.words.jump(vim.v.count1) end, has = "documentHighlight",
+              desc = "Next Reference", enabled = function() return Snacks.words.is_enabled() end },
+            { "[[", function() Snacks.words.jump(-vim.v.count1) end, has = "documentHighlight",
+              desc = "Prev Reference", enabled = function() return Snacks.words.is_enabled() end },
+            { "<a-n>", function() Snacks.words.jump(vim.v.count1, true) end, has = "documentHighlight",
+              desc = "Next Reference", enabled = function() return Snacks.words.is_enabled() end },
+            { "<a-p>", function() Snacks.words.jump(-vim.v.count1, true) end, has = "documentHighlight",
+              desc = "Prev Reference", enabled = function() return Snacks.words.is_enabled() end },
+          },
+        },
+        clangd = {
+          enabled = true,
+          keys = {
+            { "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+          },
+        },
         stylua = { enabled = false },
         lua_ls = {
           -- mason = false, -- set to false if you don't want this server to be installed with mason
@@ -166,114 +168,4 @@ return {
     }
     return ret
   end,
-  ---@param opts PluginLspOpts
-  config = vim.schedule_wrap(function(_, opts)
-    -- setup autoformat
-    LazyVim.format.register(LazyVim.lsp.formatter())
-
-    -- setup keymaps and disable semantic tokens
-    LazyVim.lsp.on_attach(function(client, buffer)
-      -- disable semantic tokens
-      -- client.server_capabilities.semanticTokensProvider = nil
-      -- setup keymaps
-      require("lazyvim.plugins.lsp.keymaps").on_attach(client, buffer)
-    end)
-
-    LazyVim.lsp.setup()
-    LazyVim.lsp.on_dynamic_capability(require("lazyvim.plugins.lsp.keymaps").on_attach)
-
-    -- inlay hints
-    if opts.inlay_hints.enabled then
-      LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
-        if
-          vim.api.nvim_buf_is_valid(buffer)
-          and vim.bo[buffer].buftype == ""
-          and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
-        then
-          vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
-        end
-      end)
-    end
-
-    -- folds
-    if opts.folds.enabled then
-      LazyVim.lsp.on_supports_method("textDocument/foldingRange", function(client, buffer)
-        if LazyVim.set_default("foldmethod", "expr") then
-          LazyVim.set_default("foldexpr", "v:lua.vim.lsp.foldexpr()")
-        end
-      end)
-    end
-
-    -- code lens
-    if opts.codelens.enabled and vim.lsp.codelens then
-      LazyVim.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
-        vim.lsp.codelens.refresh()
-        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-          buffer = buffer,
-          callback = vim.lsp.codelens.refresh,
-        })
-      end)
-    end
-
-    -- diagnostics
-    if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
-      opts.diagnostics.virtual_text.prefix = function(diagnostic)
-        local icons = LazyVim.config.icons.diagnostics
-        for d, icon in pairs(icons) do
-          if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-            return icon
-          end
-        end
-        return "●"
-      end
-    end
-    vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
-
-    if opts.capabilities then
-      vim.lsp.config("*", { capabilities = opts.capabilities })
-    end
-
-    -- disable semantic highlights
-    -- for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
-    --   vim.api.nvim_set_hl(0, group, {})
-    -- end
-
-    -- get all the servers that are available through mason-lspconfig
-    local have_mason = LazyVim.has("mason-lspconfig.nvim")
-    local mason_all = have_mason
-        and vim.tbl_keys(require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package)
-      or {} --[[ @as string[] ]]
-    local mason_exclude = {} ---@type string[]
-
-    ---@return boolean? exclude automatic setup
-    local function configure(server)
-      local sopts = opts.servers[server]
-      sopts = sopts == true and {} or (not sopts) and { enabled = false } or sopts --[[@as lazyvim.lsp.Config]]
-
-      if sopts.enabled == false then
-        mason_exclude[#mason_exclude + 1] = server
-        return
-      end
-
-      local use_mason = sopts.mason ~= false and vim.tbl_contains(mason_all, server)
-      local setup = opts.setup[server] or opts.setup["*"]
-      if setup and setup(server, sopts) then
-        mason_exclude[#mason_exclude + 1] = server
-      else
-        vim.lsp.config(server, sopts) -- configure the server
-        if not use_mason then
-          vim.lsp.enable(server)
-        end
-      end
-      return use_mason
-    end
-
-    local install = vim.tbl_filter(configure, vim.tbl_keys(opts.servers))
-    if have_mason then
-      require("mason-lspconfig").setup({
-        ensure_installed = vim.list_extend(install, LazyVim.opts("mason-lspconfig.nvim").ensure_installed or {}),
-        automatic_enable = { exclude = mason_exclude },
-      })
-    end
-  end),
 }
